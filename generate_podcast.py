@@ -13,6 +13,12 @@ logging.basicConfig(level=logging.INFO)
 NEWSDATA_API_KEY = os.getenv("NEWSDATA_API_KEY")
 ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
 
+ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
+if not ELEVENLABS_API_KEY:
+    raise ValueError("Missing ElevenLabs API key")
+
+
+
 
 def get_local_news(city, state=""):
     query = f"{city} {state}" if state else city
