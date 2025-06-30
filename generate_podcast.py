@@ -15,17 +15,19 @@ ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
 
 
 def get_local_news(city, state=""):
-    if state:
-        query = f"{city} {state}"
-    else:
-        query = city
-
+    query = f"{city} {state}" if state else city
     url = f"https://newsdata.io/api/1/news?apikey={NEWSDATA_API_KEY}&q={query}&country=us&language=en&category=top"
+    logging.info(f"Requesting news for: {query}")
+    logging.info(f"URL: {url}")
     response = requests.get(url)
+    logging.info(f"NewsData API status: {response.status_code}")
+    logging.info(f"NewsData API response: {response.text}")
+
     data = response.json()
-    articles = data.get("results", [])[:15]
+    articles = data.get("results", [])[:5]
 
     if not articles:
+        logging.warning("No articles found")
         return []
 
     return [f"{a['title']}. {a['description'] or ''}" for a in articles]
