@@ -11,11 +11,7 @@ logging.basicConfig(level=logging.INFO)
 
 # API Keys
 NEWSDATA_API_KEY = os.getenv("NEWSDATA_API_KEY")
-ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
 
-ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
-if not ELEVENLABS_API_KEY:
-    raise ValueError("Missing ElevenLabs API key")
 
 
 
@@ -118,9 +114,3 @@ def convert_to_audio(text, location_name):
 
 
 
-
-
-
-# Log keys info (partially masked)
-logging.info(f"Using NewsData API key: {NEWSDATA_API_KEY[:5]}...{NEWSDATA_API_KEY[-4:]}")
-logging.info(f"Using ElevenLabs API key: {ELEVENLABS_API_KEY[:5]}...{ELEVENLABS_API_KEY[-4:]}")
