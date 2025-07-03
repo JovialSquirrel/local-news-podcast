@@ -101,35 +101,21 @@ def sanitize_filename(name):
     # Replace spaces with underscores
     return name.replace(" ", "_")
 
-def convert_to_audio(text, city_name, voice_id="pNInz6obpgDQGcFmaJgB"):
-    url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}"
-    headers = {
-        "xi-api-key": ELEVENLABS_API_KEY,
-        "Content-Type": "application/json"
-    }
+from gtts import gTTS
+from datetime import datetime
+import re
 
-    payload = {
-        "text": text,
-        "model_id": "eleven_monolingual_v1",
-        "voice_settings": {
-            "stability": 0.75,
-            "similarity_boost": 0.75
-        }
-    }
+def convert_to_audio(text, location_name):
+    # Sanitize file name
+    today = datetime.now().strftime("%A, %B %d")
+    safe_location = re.sub(r'[\\/*?:"<>|]', "", location_name)
+    filename = f"{safe_location} News {today}.mp3"
 
-    # Create a descriptive, email-safe filename
-    today = datetime.now().strftime("%A_%B_%d_%Y")  # Example: Friday_June_27_2025
-    raw_filename = f"{city_name}_News_{today}"
-    safe_filename = sanitize_filename(raw_filename) + ".mp3"
-    filepath = os.path.join(os.getcwd(), safe_filename)
+    tts = gTTS(text)
+    tts.save(filename)
 
-    response = requests.post(url, json=payload, headers=headers)
-    response.raise_for_status()
+    return filename
 
-    with open(filepath, "wb") as f:
-        f.write(response.content)
-
-    return filepath
 
 
 
