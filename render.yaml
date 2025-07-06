@@ -2,7 +2,7 @@ services:
   - type: web
     name: podcast-app
     env: python
-    buildCommand: "pip install -r requirements.txt"
+    buildCommand: "python -m ensurepip --upgrade && pip install -r requirements.txt"
     startCommand: "python app.py"
     envVars:
       - key: EMAIL_USER
