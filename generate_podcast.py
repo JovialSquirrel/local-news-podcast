@@ -12,13 +12,9 @@ logging.basicConfig(level=logging.INFO)
 # API Keys
 NEWSDATA_API_KEY = os.getenv("NEWSDATA_API_KEY")
 
-
-
-
-
-def get_local_news(city, state=""):
+def get_local_news(city, state="", limit=5):
     query = f"{city} {state}" if state else city
-    url = f"https://newsdata.io/api/1/news?apikey={NEWSDATA_API_KEY}&q={query}&country=us&language=en&category=top"
+    url = f"https://newsdata.io/api/1/news?apikey={NEWSDATA_API_KEY}&q={query}&country=us&language=en&category=top&size={limit}"
     logging.info(f"Requesting news for: {query}")
     logging.info(f"URL: {url}")
     response = requests.get(url)
@@ -26,14 +22,13 @@ def get_local_news(city, state=""):
     logging.info(f"NewsData API response: {response.text}")
 
     data = response.json()
-    articles = data.get("results", [])[:5]
+    articles = data.get("results", [])
 
     if not articles:
         logging.warning("No articles found")
         return []
 
     return [f"{a['title']}. {a['description'] or ''}" for a in articles]
-
 
 def summarize_news(news_items, city_name):
     OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
@@ -49,14 +44,13 @@ Make sure to cover EACH news story in the list clearly and completely. Do NOT sk
 
 Do NOT include any commentary, analysis, or meta text — only the words to be said in the podcast.
 
-Write in a casual, engaging tone, like you’re speaking directly to listeners.
+Write in a casual, engaging tone, like you're speaking directly to listeners.
 
 News stories:
 {chr(10).join(news_items)}
 
 End the script naturally.
 """
-
 
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
@@ -85,21 +79,15 @@ End the script naturally.
         logging.error(f"Unexpected response format from Claude: {response.text}")
         return "Sorry, something went wrong formatting the Claude response."
 
-
 from datetime import datetime
-
 import re
-from datetime import datetime
+from gtts import gTTS
 
 def sanitize_filename(name):
     # Replace anything that's not a letter, number, space, or hyphen with nothing
     name = re.sub(r"[^\w\s-]", "", name)
     # Replace spaces with underscores
     return name.replace(" ", "_")
-
-from gtts import gTTS
-from datetime import datetime
-import re
 
 def convert_to_audio(text, location_name):
     # Sanitize file name
@@ -111,6 +99,3 @@ def convert_to_audio(text, location_name):
     tts.save(filename)
 
     return filename
-
-
-
