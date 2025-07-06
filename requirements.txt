@@ -3,7 +3,3 @@ requests
 openai
 elevenlabs
 python-dotenv
-smtplib
-email-mime-text
-email-mime-multipart
-email-mime-base
